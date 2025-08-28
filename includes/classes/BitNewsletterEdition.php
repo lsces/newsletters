@@ -21,8 +21,10 @@
 /**
  * required setup
  */
-require_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletter.php' );
-require_once( LIBERTY_PKG_CLASS_PATH.'LibertyMime.php' );
+namespace Bitweaver\Newsletters;
+use Bitweaver\BitBase;
+use Bitweaver\KernelTools;
+use Bitweaver\Liberty\LibertyMime;
 
 define( 'BITNEWSLETTEREDITION_CONTENT_TYPE_GUID', 'bitnewsletteredn' );
 
@@ -30,16 +32,20 @@ define( 'BITNEWSLETTEREDITION_CONTENT_TYPE_GUID', 'bitnewsletteredn' );
  * @package newsletters
  */
 class BitNewsletterEdition extends LibertyMime {
-	function __construct( $pEditionId=NULL, $pContentId=NULL, $pNlId=NULL ) {
+
+	public $mEditionId;
+	public $mNewsletter;
+
+	public function __construct( $pEditionId=NULL, $pContentId=NULL, $pNlId=NULL ) {
 		parent::__construct();
-		$this->registerContentType( BITNEWSLETTEREDITION_CONTENT_TYPE_GUID, array(
+		$this->registerContentType( BITNEWSLETTEREDITION_CONTENT_TYPE_GUID, [
 			'content_type_guid' => BITNEWSLETTEREDITION_CONTENT_TYPE_GUID,
-			'content_name' => 'Edition',
-			'handler_class' => 'BitNewsletterEdition',
-			'handler_package' => 'newsletters',
-			'handler_file' => 'BitNewsletterEdition.php',
-			'maintainer_url' => 'http://www.bitweaver.org'
-		) );
+			'content_name'      => 'Edition',
+			'handler_class'     => 'BitNewsletterEdition',
+			'handler_package'   => 'newsletters',
+			'handler_file'      => 'BitNewsletterEdition.php',
+			'maintainer_url'    => 'http://www.bitweaver.org',
+		] );
 		$this->mEditionId = $pEditionId;
 		$this->mContentId = $pContentId;
 		$this->mContentTypeGuid = BITNEWSLETTEREDITION_CONTENT_TYPE_GUID;
@@ -51,20 +57,20 @@ class BitNewsletterEdition extends LibertyMime {
 		$this->mAdminContentPerm = 'p_newsletters_admin';
 	}
 
-	function verify( &$pParamHash ) {
+	public function verify( &$pParamHash ): bool {
 
 		if( @$this->verifyId( $pParamHash['nl_content_id'] ) ) {
 			$pParamHash['edition_store']["nl_content_id"] = $pParamHash['nl_content_id'];
 		} else {
-			$this->mErrors['nl_content_id'] = tra( 'No newsletter was selected for this edition.' );
+			$this->mErrors['nl_content_id'] = KernelTools::tra( 'No newsletter was selected for this edition.' );
 		}
 		$pParamHash['edition_store']['is_draft'] = !empty( $pParamHash['is_draft'] ) ? 'y' : NULL;
 		$pParamHash['edition_store']['reply_to'] = !empty( $pParamHash['reply_to'] ) ? $pParamHash['reply_to'] : NULL;
 
-		return( count( $this->mErrors ) == 0 );
+		return count( $this->mErrors ) == 0;
 	}
 
-	function store( &$pParamHash ) {
+	public function store( &$pParamHash ): bool {
 		if( $this->verify( $pParamHash ) ) {
 			$this->mDb->StartTrans();
 			if( parent::store( $pParamHash ) ) {
@@ -83,11 +89,11 @@ class BitNewsletterEdition extends LibertyMime {
 		return( count( $this->mErrors ) == 0 );
 	}
 
-	function load( $pContentId = NULL, $pPluginParams = NULL ) {
+	public function load( $pContentId = NULL, $pPluginParams = NULL ) {
 		if( $this->verifyId( $this->mEditionId ) || $this->verifyId( $this->mContentId ) ) {
 			global $gBitSystem;
 
-			$bindVars = array(); $selectSql = ''; $joinSql = ''; $whereSql = '';
+			$bindVars = []; $selectSql = ''; $joinSql = ''; $whereSql = '';
 
 			$lookupColumn = $this->verifyId( $this->mEditionId )? 'edition_id' : 'content_id';
 			$lookupId = $this->verifyId( $this->mEditionId )? $this->mEditionId : $this->mContentId;
@@ -113,15 +119,15 @@ class BitNewsletterEdition extends LibertyMime {
 		return( count( $this->mInfo ) );
 	}
 
-	function isValid() {
+	public function isValid() {
 		return( $this->verifyId( $this->mEditionId ) );
 	}
 
 	/**
 	 * Generate a valid url for the Newsletter Edition
 	 *
-	 * @param	object	PostId of the item to use
-	 * @return	object	Url String
+	 * @param	array	$pParamHash PostId of the item to use
+	 * @return	string	Url String
 	 */
 	public static function getDisplayUrlFromHash( &$pParamHash ) {
 		$ret = NULL;
@@ -139,10 +145,10 @@ class BitNewsletterEdition extends LibertyMime {
 	}
 
 
-	function getList( &$pListHash ) {
+	public static function getList( &$pListHash ) {
 		global $gBitDb;
 
-		$bindVars = array();
+		$bindVars = [];
 		parent::prepGetList( $pListHash );
 		$mid = '';
 
@@ -179,12 +185,12 @@ class BitNewsletterEdition extends LibertyMime {
 		return $ret;
 	}
 
-	function expunge() {
+	public function expunge(): bool {
 		$ret = FALSE;
 		if( $this->isValid() ) {
 			$this->mDb->StartTrans();
 			$query = "DELETE FROM `".BIT_DB_PREFIX."newsletters_editions` WHERE `content_id`=?";
-			$result = $this->mDb->query( $query, array( $this->mContentId ) );
+			$result = $this->mDb->query( $query, [ $this->mContentId ] );
 			if( LibertyMime::expunge() ) {
 				$ret = TRUE;
 				$this->mDb->CompleteTrans();
@@ -195,21 +201,21 @@ class BitNewsletterEdition extends LibertyMime {
 		return $ret;
 	}
 
-	function isDraft() {
-		return( $this->getField( 'is_draft' ) );
+	public function isDraft() {
+		return $this->getField( 'is_draft' );
 	}
 
-	function getRecipients( $pGroupArray, $validated = TRUE, $pRequeue = FALSE ) {
+	public function getRecipients( $pGroupArray, $validated = TRUE, $pRequeue = FALSE ) {
 		global $gBitUser;
-		$ret = array();
+		$ret = [];
 		if( is_array( $pGroupArray ) ) {
 			foreach( $pGroupArray as $groupId ) {
-				$ret = array_merge( $ret, $gBitUser->getGroupUserData( $groupId, array( 'email', 'uu.user_id', 'login', 'real_name' ) ) );
+				$ret = array_merge( $ret, $gBitUser->getGroupUserData( $groupId, [ 'email', 'uu.user_id', 'login', 'real_name' ] ) );
 			}
 
 			if ( array_search( 'send_subs', $pGroupArray ) !== false ) {
 				$valid = "";
-				$bindvars = array( $this->mNewsletter->mNewsletterId );
+				$bindvars = [ $this->mNewsletter->mNewsletterId ];
 				if ($validated) {
 					$valid = " AND `is_valid`=?";
 					$bindvars[] = 'y';
@@ -224,23 +230,21 @@ class BitNewsletterEdition extends LibertyMime {
 			}
 			if( !$pRequeue ) {
 				$query = "SELECT `email`, `user_id` FROM `".BIT_DB_PREFIX."mail_queue` WHERE `content_id`=?";
-				if( $dupes = $this->mDb->getAssoc( $query, array( $this->mContentId ) ) ) {
-					$ret = array_diff_keys( $ret, $dupes );
+				if( $dupes = $this->mDb->getAssoc( $query, [ $this->mContentId ] ) ) {
+					$ret = KernelTools::array_diff_keys( $ret, $dupes );
 				}
 			}
 		}
 		return $ret;
 	}
 
-	function render() {
+	public function render() {
 		global $gBitSmarty;
 		$ret = NULL;
 		if( $this->isValid() ) {
-			$gBitSmarty->assignByRef( 'gContent', $this );
+			$gBitSmarty->assign( 'gContent', $this );
 			$ret = $gBitSmarty->fetch( 'bitpackage:newsletters/view_edition.tpl' );
 		}
 		return $ret;
 	}
 }
-
-?>

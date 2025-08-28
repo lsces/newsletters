@@ -21,7 +21,11 @@
 /**
  * required setup
  */
-require_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletter.php' );
+namespace Bitweaver\Newsletters;
+use Bitweaver\BitBase;
+use Bitweaver\Liberty\LibertyContent;
+use Bitweaver\Users\RoleUser;
+
 require_once( UTIL_PKG_INCLUDE_PATH.'phpmailer/class.phpmailer.php' );
 
 /**
@@ -29,36 +33,34 @@ require_once( UTIL_PKG_INCLUDE_PATH.'phpmailer/class.phpmailer.php' );
  */
 class BitNewsletterMailer {
     // Set default variables for all new objects
-    var $From;
-    var $FromName;
-    var $Host;
-    var $Mailer;                         // Alternative to IsSMTP()
-    var $WordWrap;
-	function BitNewsletterMailer () {
+    public $From;
+    public $FromName;
+    public $Host;
+    public $Mailer;                         // Alternative to IsSMTP()
+    public $WordWrap;
+	public $mDb;
+	public function BitNewsletterMailer () {
 		global $gBitDb, $gBitSystem, $gBitLanguage;
 		$this->mDb = $gBitDb;
 	}
 
     // Replace the default error_handler
-    function error_handler( $msg ) {
+    public function error_handler( $msg ) {
     	global $gBitDb;
-    	bit_error_handler( NULL, NULL, NULL, "FULFILLMENT ERROR: MISSSING PDF for ORDER $pOrderId CID ".$prod->mInfo['related_content_id'], $pdfInfo['pdf_file'], '', $prod->mDb );
-        print("My Site Error");
-        print("Description:");
+
+    	\Bitweaver\bit_error_handler( NULL, NULL, NULL, "FULFILLMENT ERROR: MISSSING PDF for ORDER" ); // $pOrderId CID ".$prod->mInfo['related_content_id'], $pdfInfo['pdf_file'] , '', $prod->mDb );
+        print "My Site Error";
+        print "Description:";
         printf("%s", $msg);
         exit;
     }
 
-	function isRecipientQueued( $pRecipientMixed, $pContentId ) {
-		if( BitBase::verifyId( $pRecipientMixed ) ) {
-			$lookupCol = 'user_id';
-		} else {
-			$lookupCol = 'email';
-		}
-		return( $this->mDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_queue` WHERE `content_id`=? AND `$lookupCol`=?", array( $pContentId, $pRecipientMixed ) ) );
+	public function isRecipientQueued( $pRecipientMixed, $pContentId ) {
+		$lookupCol = BitBase::verifyId( $pRecipientMixed ) ? 'user_id' : 'email';
+		return $this->mDb->getOne( "SELECT COUNT(*) FROM `" . BIT_DB_PREFIX . "mail_queue` WHERE `content_id`=? AND `$lookupCol`=?", [ $pContentId, $pRecipientMixed ] );
 	}
 
-	function queueRecipients( $pContentId, $pNewsletterContentId, $pRecipients, $pRequeue=FALSE ) {
+	public function queueRecipients( $pContentId, $pNewsletterContentId, $pRecipients, $pRequeue=FALSE ) {
 		$ret = 0;
 		if( !empty( $pRecipients ) && BitBase::verifyId( $pContentId ) ) {
 			$queueTime = time();
@@ -77,7 +79,7 @@ class BitNewsletterMailer {
 					$this->mDb->associateInsert( BIT_DB_PREFIX.'mail_queue', $insertHash );
 					$ret++;
 				} elseif( empty( $unsub ) && $pRequeue ) {
-					$bindVars = array( $queueTime, $pContentId );
+					$bindVars = [ $queueTime, $pContentId ];
 					if( !empty( $pRecipients[$email]['user_id'] ) ) {
 						$lookupCol = 'user_id';
 						$bindVars[] = $pRecipients[$email]['user_id'];
@@ -85,7 +87,7 @@ class BitNewsletterMailer {
 						$lookupCol = 'email';
 						$bindVars[]  = $email;
 					}
-					$rs = $this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `queue_date`=?, `begin_date`=NULL, `sent_date`=NULL, `last_read_date`=NULL, `mail_error`=NULL, `hits`=0 WHERE `content_id`=? AND `$lookupCol`=?", array( $bindVars ) );
+					$rs = $this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `queue_date`=?, `begin_date`=NULL, `sent_date`=NULL, `last_read_date`=NULL, `mail_error`=NULL, `hits`=0 WHERE `content_id`=? AND `$lookupCol`=?", [ $bindVars ] );
 					$ret++;
 				}
 			}
@@ -94,7 +96,7 @@ class BitNewsletterMailer {
 	}
 
 
-	function tendQueue() {
+	public function tendQueue() {
 		$this->mDb->StartTrans();
 		$query = "SELECT *
 				  FROM `".BIT_DB_PREFIX."mail_queue` mq
@@ -110,21 +112,21 @@ class BitNewsletterMailer {
 		$this->mDb->CompleteTrans();
 	}
 
-	function sendQueue( $pQueueMixed ) {
+	public function sendQueue( $pQueueMixed ) {
 		global $gBitSmarty, $gBitSystem, $gBitLanguage;
-		static $body = array();
+		static $body = [];
 		if( is_array( $pQueueMixed ) ) {
 			$pick = $pQueueMixed;
 		} elseif( is_numeric( $pQueueMixed ) ) {
-			$pick = $this->mDb->GetRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_queue` mq WHERE `mail_queue_id` = ? ".$this->mDb->SQLForUpdate(), array( $pQueueMixed ) );
+			$pick = $this->mDb->GetRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_queue` mq WHERE `mail_queue_id` = ? ".$this->mDb->SQLForUpdate(), [ $pQueueMixed ] );
 		}
 
 		if( !empty( $pick ) ) {	
 			$startTime = microtime( TRUE );
-			$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `begin_date`=? WHERE `mail_queue_id` = ? ", array( time(), $pick['mail_queue_id'] ) );
+			$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `begin_date`=? WHERE `mail_queue_id` = ? ", [ time(), $pick['mail_queue_id'] ] );
 			if( !empty( $pick['user_id'] ) ) {
-				$userHash = $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."users_users` WHERE `user_id`=?", array( $pick['user_id'] ) );
-				$pick['full_name'] = BitUser::getDisplayName( FALSE, $userHash );
+				$userHash = $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."users_users` WHERE `user_id`=?", [ $pick['user_id'] ] );
+				$pick['full_name'] = RoleUser::getDisplayNameFromHash( $userHash );
 			} else {
 				$pick['full_name'] = NULL;
 			}
@@ -138,7 +140,7 @@ class BitNewsletterMailer {
 					$body[$pick['content_id']]['reply_to'] = $content->getField( 'reply_to', $gBitSystem->getConfig( 'site_sender_email', $_SERVER['SERVER_ADMIN'] ) );
 					$body[$pick['content_id']]['object'] = $content;
 				} else {
-					bit_error_log( $this->mErrors );
+					\Bitweaver\bit_error_log( $content->mErrors );
 				}
 //				$content[$pick['content_id']] = LibertyBase::getLibertyObject();
 			}
@@ -147,7 +149,7 @@ class BitNewsletterMailer {
 			$unsub = $this->getUnsubscription( $pick['email'], $pick['nl_content_id'] );
 			if( !empty( $unsub ) ) {
 				print " SKIPPED (unsubscribed) <br/>\n";
-				$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", array( $pick['mail_queue_id'] ) );
+				$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", [ $pick['mail_queue_id'] ] );
 			} elseif( !empty( $body[$pick['content_id']] ) ) {
 				$pick['url_code'] = md5( $pick['content_id'].$pick['email'].$pick['queue_date'] );
 				$unsub = '';
@@ -162,7 +164,7 @@ class BitNewsletterMailer {
 				$htmlBody = $gBitSmarty->fetch( 'bitpackage:newsletters/mail_edition.tpl' );
 				$htmlBody = bit_add_clickthrough( $htmlBody, $pick['url_code'] );
 
-				$mailer = new PHPMailer();
+				$mailer = new \PHPMailer();
 				if( $gBitSystem->getConfig( 'bitmailer_errors_to' ) ) {
 					$mailer->Sender = $gBitSystem->getConfig( 'bitmailer_errors_to' );
 					$mailer->addCustomHeader( "Errors-To: ".$gBitSystem->getConfig( 'bitmailer_errors_to' ) );
@@ -193,10 +195,10 @@ class BitNewsletterMailer {
 				if( $mailer->Send() ) {
 					print " SENT ".round( microtime( TRUE ) - $startTime, 2)." secs<br/>\n"; flush();
 					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `sent_date`=?,`url_code`=?  WHERE `content_id`=? AND `email`=?";
-					$this->mDb->query( $updateQuery, array( time(), $pick['url_code'], $pick['content_id'], $pick['email'] ) );
+					$this->mDb->query( $updateQuery, [ time(), $pick['url_code'], $pick['content_id'], $pick['email'] ] );
 				} else {
 					$updateQuery = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `mail_error`=?,`sent_date`=?  WHERE `content_id`=? AND `email`=?";
-					$this->mDb->query( $updateQuery, array( $mailer->ErrorInfo, time(), $pick['content_id'], $pick['email'] ) );
+					$this->mDb->query( $updateQuery, [ $mailer->ErrorInfo, time(), $pick['content_id'], $pick['email'] ] );
 					$pick['error'] = $mailer->ErrorInfo;
 					$this->logError( $pick );
 				}
@@ -204,14 +206,14 @@ class BitNewsletterMailer {
 		}
 	}
 
-	function trackMail( $pUrlCode ) {
+	public function trackMail( $pUrlCode ) {
 		global $gBitDb;
 		$query = "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `hits`=`hits`+1, `last_read_date`=?, `last_read_ip`=? WHERE `url_code`=? ";
-		$gBitDb->query( $query, array( time(), $_SERVER['REMOTE_ADDR'], $pUrlCode ) );
+		$gBitDb->query( $query, [ time(), $_SERVER['REMOTE_ADDR'], $pUrlCode ] );
 	}
 
-	function logError( $pInfo ) {
-		if( !empty( $pInfo['url_code'] ) && !$this->mDb->getOne( "SELECT `url_code` FROM `".BIT_DB_PREFIX."mail_errors` WHERE `url_code`=?", array( $pInfo['url_code'] ) ) ) {
+	public function logError( $pInfo ) {
+		if( !empty( $pInfo['url_code'] ) && !$this->mDb->getOne( "SELECT `url_code` FROM `".BIT_DB_PREFIX."mail_errors` WHERE `url_code`=?", [ $pInfo['url_code'] ] ) ) {
 			$store['url_code'] = $pInfo['url_code'];
 			$store['user_id'] = !empty( $pInfo['user_id'] ) ? $pInfo['user_id'] : NULL;
 			$store['content_id'] = !empty( $pInfo['content_id'] ) ? $pInfo['content_id'] : NULL;
@@ -225,7 +227,7 @@ class BitNewsletterMailer {
 
 	// Looks up the code from the url to determine if the unsubscribe URL is valid.
 	// Can be statically called
-	function lookupSubscription( $pLookup ) {
+	public function lookupSubscription( $pLookup ) {
 		global $gBitDb;
 		$ret = NULL;
 		if( is_array( $pLookup ) ) {
@@ -234,14 +236,14 @@ class BitNewsletterMailer {
 						INNER JOIN `".BIT_DB_PREFIX."liberty_content_types` tct ON( tct.`content_type_guid`=lc.`content_type_guid` )
 						LEFT OUTER JOIN `".BIT_DB_PREFIX."users_users` uu ON( mq.`user_id`=uu.`user_id` )
 					  WHERE mq.`".key( $pLookup )."`=? ";
-			$ret = $gBitDb->getRow( $query, array( current( $pLookup ) ) );
+			$ret = $gBitDb->getRow( $query, [ current( $pLookup ) ] );
 		}
 		return( $ret );
 	}
 
 	// Accepts a single row has containing the column of mail_subscriptions as the key to lookup the unsubscription info
 	// Can be statically called
-	function getUnsubscriptions( $pMixed ) {
+	public function getUnsubscriptions( $pMixed ) {
 		global $gBitDb;
 		$ret = NULL;
 		if( is_array( $pMixed ) ) {
@@ -257,20 +259,20 @@ class BitNewsletterMailer {
 		return( $ret );
 	}
 
-	function getUnsubscription( $pEmail, $pNewsletterContentId ) {
+	public function getUnsubscription( $pEmail, $pNewsletterContentId ) {
 		global $gBitDb;
-		return $gBitDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` ms LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id`=ms.`user_id`) WHERE (ms.`content_id`=? OR `unsubscribe_all`='y') AND (ms.`email`=? OR uu.`email`=?)", array( $pNewsletterContentId, $pEmail, $pEmail ) );
+		return $gBitDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` ms LEFT JOIN `".BIT_DB_PREFIX."users_users` uu ON (uu.`user_id`=ms.`user_id`) WHERE (ms.`content_id`=? OR `unsubscribe_all`='y') AND (ms.`email`=? OR uu.`email`=?)", [ $pNewsletterContentId, $pEmail, $pEmail ] );
 	}
 
-	function storeSubscriptions( $pSubHash ) {
+	public static function storeSubscriptions( $pSubHash ) {
 		global $gBitSystem, $gBitDb;
 		$ret = FALSE;
 		$query = "delete from `".BIT_DB_PREFIX."mail_subscriptions` where `".key( $pSubHash['sub_lookup'] )."`=?";
-		$result = $gBitDb->query($query, array( current( $pSubHash['sub_lookup'] ) ) );
+		$result = $gBitDb->query($query, [ current( $pSubHash['sub_lookup'] ) ] );
 		$ret = TRUE;
 		if( !empty( $pSubHash['unsub_content'] ) ) {
 			foreach( $pSubHash['unsub_content'] as $conId ) {
-				$storeHash = array();
+				$storeHash = [];
 				$storeHash['content_id'] = $conId;
 				$storeHash['unsubscribe_all'] = !empty( $pSubHash['unsubscribe_all'] ) ? 'y' : NULL;
 				$storeHash['unsubscribe_date'] = time();
@@ -282,7 +284,7 @@ class BitNewsletterMailer {
 			}
 		} elseif( !empty( $pSubHash['unsubscribe_all'] ) ) {
 			// unsub all with no reference content_id
-			$storeHash = array();
+			$storeHash = [];
 			$storeHash['unsubscribe_all'] = !empty( $pSubHash['unsubscribe_all'] ) ? 'y' : NULL;
 			$storeHash['unsubscribe_date'] = time();
 			$storeHash[key( $pSubHash['sub_lookup'] )] = current( $pSubHash['sub_lookup'] );
@@ -294,8 +296,8 @@ class BitNewsletterMailer {
 		return $ret;
 	}
 
-	function getQueue( &$pListHash ) {
-		$ret = array();
+	public function getQueue( &$pListHash ) {
+		$ret = [];
 		
 		LibertyContent::prepGetList( $pListHash );
 		
@@ -312,22 +314,22 @@ class BitNewsletterMailer {
 		return $ret;
 	}
 
-	function expungeQueueRow( $pQueueId ) {
+	public function expungeQueueRow( $pQueueId ) {
 		if( BitBase::verifyId( $pQueueId ) ) {
-			$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", array( $pQueueId ) );
+			$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."mail_queue` WHERE `mail_queue_id`=?", [ $pQueueId ] );
 		}
 	}
 
-	function storeClickthrough( $pUrlCode ) {
+	public static function storeClickthrough( $pUrlCode ) {
 		global $gBitDb;
 
 		$uri = substr( preg_replace( '/[&\?]?ct=[a-z0-9]{32}/', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ), 0, 250 );
 		$query = "SELECT mc.`clicks`, mq.`content_id`, mq.`user_id`, mc.`clicked_url` FROM `".BIT_DB_PREFIX."mail_queue` mq
 					LEFT JOIN `".BIT_DB_PREFIX."mail_clickthrough` mc ON (mq.`user_id`=mc.`user_id` AND mq.`content_id`=mc.`content_id` AND mc.`clicked_url`=?)
 				  WHERE `url_code`=?";
-		if( $row = $gBitDb->getRow( $query, array( $uri, $pUrlCode ) ) ) {
+		if( $row = $gBitDb->getRow( $query, [ $uri, $pUrlCode ] ) ) {
 			if( $row['clicked_url'] ) {
-				$gBitDb->query( "UPDATE `".BIT_DB_PREFIX."mail_clickthrough` SET `clicks`=`clicks`+1 WHERE  `user_id`=? AND `content_id`=? AND `clicked_url`=? ", array( $row['user_id'], $row['content_id'], $row['clicked_url'] ) );
+				$gBitDb->query( "UPDATE `".BIT_DB_PREFIX."mail_clickthrough` SET `clicks`=`clicks`+1 WHERE  `user_id`=? AND `content_id`=? AND `clicked_url`=? ", [ $row['user_id'], $row['content_id'], $row['clicked_url'] ] );
 			} else {
 				$row['clicks'] = 1;
 				$row['clicked_url'] = $uri;
@@ -362,5 +364,3 @@ function process_clickthrough_match( $matches ) {
 	}
 	return $ret; 
 }
-
-?>
