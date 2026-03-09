@@ -48,7 +48,7 @@ if( $gContent->isValid() ) {
 } else {
 	$listHash = array();
 	$editions = $gContent->getList( $listHash );
-	$gBitSmarty->assignByRef( 'editionList', $editions );
+	$gBitSmarty->assign( 'editionList', $editions );
 	$gBitSmarty->assign( 'listInfo', $listHash );
 	$title = tra("List Editions");
 	$mid = 'bitpackage:newsletters/list_editions.tpl';
@@ -57,4 +57,3 @@ if( $gContent->isValid() ) {
 // Display the template
 $gBitSystem->display( $mid, $title , array( 'display_mode' => 'edit' ));
 
-?>

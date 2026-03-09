@@ -62,7 +62,7 @@ if (isset($_REQUEST["preview"])) {
 	$gBitSmarty->assign( 'title',!empty( $_REQUEST["title"] ) ? $_REQUEST["title"] : $gContent->getTitle() );
 
 	$parsed = LibertyContent::parseDataHash( $formInfo['data'] );
-	$gBitSmarty->assignByRef( 'parsed', $parsed );
+	$gBitSmarty->assign( 'parsed', $parsed );
 
 	$gContent->invokeServices( 'content_preview_function' );
 } elseif (isset($_REQUEST["save"])) {
@@ -90,9 +90,8 @@ if( empty( $formInfo ) ) {
 	$formInfo = &$gContent->mInfo;
 }
 
-$gBitSmarty->assignByRef( 'pageInfo', $formInfo );
+$gBitSmarty->assign( 'pageInfo', $formInfo );
 $gBitSmarty->assign( 'errors', $gContent->mErrors );
 
 // Display the template
 $gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) , array( 'display_mode' => 'edit' ));
-?>

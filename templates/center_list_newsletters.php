@@ -18,9 +18,8 @@ if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'p_newsletters_subs
 		$newsletters[$contentId]['editions'] = BitNewsletterEdition::getList( $listHash );
 	}
 
-	$gBitSmarty->assignByRef( 'subs', BitNewsletter::getUserSubscriptions( $gBitUser->getField( 'user_id' ), $gBitUser->getField( 'email' ) ) );
-	$gBitSmarty->assignByRef('newsletters', $newsletters );
+	$gBitSmarty->assign( 'subs', BitNewsletter::getUserSubscriptions( $gBitUser->getField( 'user_id' ), $gBitUser->getField( 'email' ) ) );
+	$gBitSmarty->assign('newsletters', $newsletters );
 
 }
 
-?>

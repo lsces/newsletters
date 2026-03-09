@@ -10,10 +10,9 @@ require_once( '../kernel/includes/setup_inc.php' );
 $feedback = array();
 
 $gDefaultCenter = 'bitpackage:newsletters/center_list_newsletters.tpl';
-$gBitSmarty->assignByRef( 'gDefaultCenter', $gDefaultCenter );
+$gBitSmarty->assign( 'gDefaultCenter', $gDefaultCenter );
 
 $gBitSmarty->assign( 'feedback', $feedback );
 
 // Display the template
 $gBitSystem->display( 'bitpackage:kernel/dynamic.tpl', tra( 'Newsletters' ) , array( 'display_mode' => 'display' ));
-?>

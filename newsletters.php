@@ -50,8 +50,8 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 $gContent->invokeServices( 'content_edit_function' );
 
 $newsletters = $gContent->getList( $listHash );
-$gBitSmarty->assignByRef( 'newsletters', $newsletters );
-$gBitSmarty->assignByRef( 'listInfo', $listHash );
+$gBitSmarty->assign( 'newsletters', $newsletters );
+$gBitSmarty->assign( 'listInfo', $listHash );
 
 // Fill array with possible number of questions per page
 /*
@@ -75,4 +75,3 @@ include_once( CATEGORIES_PKG_INCLUDE_PATH.'categorize_list_inc.php' );
 // Display the template
 $gBitSystem->display( 'bitpackage:newsletters/list_newsletters.tpl', NULL, array( 'display_mode' => 'display' ));
 
-?>

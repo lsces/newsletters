@@ -30,8 +30,8 @@ $feedback = array();
 /* List newsletters */
 $listHash = array();
 $newsletters = $gContent->getList( $listHash );
-$gBitSmarty->assignByRef( 'subs', BitNewsletter::getUserSubscriptions( $gBitUser->getField( 'user_id' ), $gBitUser->getField( 'email' ) ) );
-$gBitSmarty->assignByRef('newsletters', $newsletters );
+$gBitSmarty->assign( 'subs', BitNewsletter::getUserSubscriptions( $gBitUser->getField( 'user_id' ), $gBitUser->getField( 'email' ) ) );
+$gBitSmarty->assign('newsletters', $newsletters );
 
 $foo = parse_url($_SERVER["REQUEST_URI"]);
 $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
@@ -108,4 +108,3 @@ $gBitSmarty->assign( 'feedback', $feedback );
 // Display the template
 $gBitSystem->display( $mid, $title , array( 'display_mode' => 'display' ));
 
-?>
