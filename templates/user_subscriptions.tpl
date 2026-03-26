@@ -1,4 +1,4 @@
-{if $subInfo || $gBitUser->hasPermission('p_newsletters_subscribe')}
+{if $subInfo or $gBitUser->hasPermission('p_newsletters_subscribe')}
 {strip}
 <div class="display newsletters">
 	<div class="header">
@@ -31,7 +31,7 @@
 			{formlabel label="Subscriptions"}
 			{forminput}
 				{foreach from=$newsletters key=nlId item=nl}
-					{if $nl.allow_user_sub}<input type="checkbox" name="nl_content_id[]" value="{$nlId}" {if !$unsubs.$nlId && !$subInfo.unsubscribe_all}checked="checked"{/if}/>{/if} <a href="{$nl.display_url}"/>{$nl.title|escape}</a> <br/>
+					{if $nl.allow_user_sub}<input type="checkbox" name="nl_content_id[]" value="{$nlId}" {if !$unsubs.$nlId and !$subInfo.unsubscribe_all}checked="checked"{/if}/>{/if} <a href="{$nl.display_url}"/>{$nl.title|escape}</a> <br/>
 				{foreachelse}
 					{tr}No newsletters were found{/tr}
 				{/foreach}

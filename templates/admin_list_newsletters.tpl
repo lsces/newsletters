@@ -1,4 +1,4 @@
-{if !$newsletters || $gContent->isValid() || $smarty.request.new}
+{if !$newsletters or $gContent->isValid() or $smarty.request.new}
 	{include file="bitpackage:newsletters/edit_newsletter.tpl"}
 {else}
 {strip}
