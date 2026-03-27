@@ -1,4 +1,4 @@
-{if !$newsletters or $gContent->isValid() or $smarty.request.new}
+{if !$newsletters || $gContent->isValid() || $smarty.request.new}
 {strip}
 <div class="floaticon">{bithelp}</div>
 
@@ -32,21 +32,21 @@
 
 				<div class="form-group">
 					{forminput label="checkbox"}
-						<input type="checkbox" name="allow_user_sub" id="allow_user_sub" {if !$gContent->isValid() or $gContent->mInfo.allow_user_sub eq 'y'}checked="checked"{/if} />Users can Subscribe
+						<input type="checkbox" name="allow_user_sub" id="allow_user_sub" {if !$gContent->isValid() || $gContent->mInfo.allow_user_sub eq 'y'}checked="checked"{/if} />Users can Subscribe
 						{formhelp note="Users can subscribe to this list. Disabling this options means that you have to manually add users to the list."}
 					{/forminput}
 				</div>
 
 				<div class="form-group">
 					{forminput label="checkbox"}
-						<input type="checkbox" name="allow_any_sub" id="allow_any_sub" {if !$gContent->isValid() or $gContent->mInfo.allow_any_sub eq 'y'}checked="checked"{/if} />Any e-mail Address
+						<input type="checkbox" name="allow_any_sub" id="allow_any_sub" {if !$gContent->isValid() || $gContent->mInfo.allow_any_sub eq 'y'}checked="checked"{/if} />Any e-mail Address
 						{formhelp note="Users may subscribe using any email address."}
 					{/forminput}
 				</div>
 
 				<div class="form-group">
 					{forminput label="checkbox"}
-						<input type="checkbox" name="unsub_msg" id="unsub_msg" {if !$gContent->isValid() or $gContent->mInfo.unsub_msg eq 'y'}checked="checked"{/if} />Append Un/Subscribe Instructions
+						<input type="checkbox" name="unsub_msg" id="unsub_msg" {if !$gContent->isValid() || $gContent->mInfo.unsub_msg eq 'y'}checked="checked"{/if} />Append Un/Subscribe Instructions
 						{formhelp note="Append instructions on how to subscribe / unsubscribe to ever outgoing newsletter. This is only useful when users can un / subscribe to the list themselves."}
 					{/forminput}
 				</div>

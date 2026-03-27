@@ -34,7 +34,7 @@
 							{/forminput}
 						</div>
 
-						{if $gBitUser->hasPermission('p_use_content_templates') and $templates}
+						{if $gBitUser->hasPermission('p_use_content_templates') && $templates}
 							<div class="form-group">
 								{formlabel label="Template" for=""}
 								{forminput}

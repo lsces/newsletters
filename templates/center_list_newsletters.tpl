@@ -24,7 +24,7 @@
 					{$gContent->getParsedData()}
 				{/forminput}
 			</div>
-			{if ($gContent->getField('allow_user_sub') eq 'y') or $gBitUser->hasPermission( 'p_newsletters_subscribe' )}
+			{if ($gContent->getField('allow_user_sub') eq 'y') || $gBitUser->hasPermission( 'p_newsletters_subscribe' )}
 				{form}
 					<input type="hidden" name="nl_id" value="{$gContent->mNewsletterId}" />
 					<div class="form-group">
@@ -67,10 +67,10 @@
 *}
 
 			{foreach from=$newsletters item=nl key=nlId}
-				{if $newsletters.individual ne 'y' or $newsletters.individual_p_subscribe_newsletters eq 'y'}
+				{if $newsletters.individual ne 'y' || $newsletters.individual_p_subscribe_newsletters eq 'y'}
 					<li class="item {cycle values='odd,even'}">
 						<div class="floaticon">
-						{if $subs.$nlId.unsubscribe_all or $subs.$nlId.unsubscribe_date}
+						{if $subs.$nlId.unsubscribe_all || $subs.$nlId.unsubscribe_date}
 							<strong>{biticon ipackage="icons" iname="dialog-cancel" iexplain="Success" iforce="icon"}{tr}Unsubscribed{/tr}: {$subs.$nlId.unsubscribe_date|bit_short_date}</strong><br/>
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}sub.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
 						{elseif $subs.$nlId}
