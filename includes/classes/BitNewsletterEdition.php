@@ -44,7 +44,7 @@ class BitNewsletterEdition extends LibertyMime {
 			'handler_class'     => 'BitNewsletterEdition',
 			'handler_package'   => 'newsletters',
 			'handler_file'      => 'BitNewsletterEdition.php',
-			'maintainer_url'    => 'http://www.bitweaver.org',
+			'maintainer_url'    => 'https://www.bitweaver.org',
 		] );
 		$this->mEditionId = $pEditionId;
 		$this->mContentId = $pContentId;
@@ -133,11 +133,7 @@ class BitNewsletterEdition extends LibertyMime {
 		$ret = NULL;
 		global $gBitSystem;
 		if( BitBase::verifyId( $pParamHash['edition_id'] ) ) {
-			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = NEWSLETTERS_PKG_URL.'edition/'.$pParamHash['edition_id'];
-			} else {
-				$ret = NEWSLETTERS_PKG_URL.'edition.php?edition_id='.$pParamHash['edition_id'];
-			}
+			$ret = ( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) ? NEWSLETTERS_PKG_URL . 'edition/' . $pParamHash['edition_id'] : NEWSLETTERS_PKG_URL . 'edition.php?edition_id=' . $pParamHash['edition_id'];
 		} else {
 			$ret = NEWSLETTERS_PKG_URL.'edition.php';
 		}

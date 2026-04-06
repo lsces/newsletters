@@ -45,7 +45,7 @@ class BitNewsletter extends LibertyContent {
 			'handler_class'     => 'BitNewsletter',
 			'handler_package'   => 'newsletters',
 			'handler_file'      => 'BitNewsletter.php',
-			'maintainer_url'    => 'http://www.bitweaver.org',
+			'maintainer_url'    => 'https://www.bitweaver.org',
 		] );
 		$this->mNewsletterId = $this->verifyId( $pNlId ) ? $pNlId : NULL;
 		$this->mContentId = $pContentId;
@@ -239,48 +239,45 @@ class BitNewsletter extends LibertyContent {
 		if( !empty( $subRow ) ) {
 			$this->mContentId = $subRow['content_id'];
 			$this->load();
-			if( $this->mDb->getRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `$subRow[col_name]`=?", [ $subRow['col_val'] ] ) ) {
-				$query = "UPDATE `".BIT_DB_PREFIX."mail_subscriptions` SET `unsubscribe_date`=?, `content_id`=? WHERE `$subRow[col_name]`=? AND `unsubscribe_date` IS NULL";
-			} else {
-				$query = "INSERT INTO `".BIT_DB_PREFIX."mail_subscriptions` (`unsubscribe_date`,`content_id`,`$subRow[col_name]`) VALUES(?,?,?)";
-			}
+			$query = ( $this->mDb->getRow( "SELECT * FROM `" . BIT_DB_PREFIX . "mail_subscriptions` WHERE `$subRow[col_name]`=?", [ $subRow['col_val'] ] ) ) ? "UPDATE `" . BIT_DB_PREFIX . "mail_subscriptions` SET `unsubscribe_date`=?, `content_id`=? WHERE `$subRow[col_name]`=? AND `unsubscribe_date` IS NULL" : "INSERT INTO `" . BIT_DB_PREFIX . "mail_subscriptions` (`unsubscribe_date`,`content_id`,`$subRow[col_name]`) VALUES(?,?,?)";
 			$result = $this->mDb->query( $query, [ $now, $subRow['content_id'], $subRow['col_val'] ] );
-			if( $notify ) {
+			if ($notify) {
 				// Now send a bye bye email
-				$gBitSmarty->assign('sub_code', $subRow["sub_code"]);
-				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/newsletter_byebye.tpl');
-				@mail($subRow["email"], KernelTools::tra('Thank you from') . ' ' . $gBitSystem->getConfig( "bitmailer_from" ), $mail_data,
-					"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
+				$gBitSmarty->assign( 'sub_code', $subRow["sub_code"] );
+				$mail_data = $gBitSmarty->fetch( 'bitpackage:newsletters/newsletter_byebye.tpl' );
+				@mail( $subRow["email"], KernelTools::tra( 'Thank you from' ) . ' ' . $gBitSystem->getConfig( "bitmailer_from" ), $mail_data,
+					"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n" );
 			}
-			$ret = TRUE;
+			$ret = true;
 		}
 		return $ret;
 	}
 
-/*
-	function add_all_users($nl_id) {
-		$query = "select `email` from `".BIT_DB_PREFIX."users_users`";
-		$result = $this->mDb->query($query,[]);
-		while ($res = $result->fetchRow()) {
-			$email = $res["email"];
-			if (!empty($email)) {
-				$this->newsletter_subscribe($nl_id, $email);
+	/*
+		function add_all_users($nl_id) {
+			$query = "select `email` from `".BIT_DB_PREFIX."users_users`";
+			$result = $this->mDb->query($query,[]);
+			while ($res = $result->fetchRow()) {
+				$email = $res["email"];
+				if (!empty($email)) {
+					$this->newsletter_subscribe($nl_id, $email);
+				}
 			}
 		}
-	}
 
-	function updateUsers() {
-		if( $this->isValid() ) {
-			$users = $this->mDb->getOne( "select count(*) from `".BIT_DB_PREFIX."mail_subscriptions` where `nl_id`=?", [ $this->mNewsletterId ] );
-			$query = "update `".BIT_DB_PREFIX."newsletters` set `users`=? where `nl_id`=?";
-			$result = $this->mDb->query( $query, [ $users, $this->mNewsletterId ] );
+		function updateUsers() {
+			if( $this->isValid() ) {
+				$users = $this->mDb->getOne( "select count(*) from `".BIT_DB_PREFIX."mail_subscriptions` where `nl_id`=?", [ $this->mNewsletterId ] );
+				$query = "update `".BIT_DB_PREFIX."newsletters` set `users`=? where `nl_id`=?";
+				$result = $this->mDb->query( $query, [ $users, $this->mNewsletterId ] );
+			}
 		}
-	}
-*/
+	*/
 
-	public static function getList( &$pListHash ) {
+	public static function getList( &$pListHash )
+	{
 		global $gBitDb;
-		if ( empty( $pParamHash["sort_mode"] ) ) {
+		if (empty( $pParamHash["sort_mode"] )) {
 			$pListHash['sort_mode'] = 'created_desc';
 		}
 		BitBase::prepGetList( $pListHash );
@@ -288,95 +285,97 @@ class BitNewsletter extends LibertyContent {
 		$joinSql = '';
 		$mid = '';
 
-		if( @BitBase::verifyId( $pListHash['nl_id'] ) ) {
+		if (@BitBase::verifyId( $pListHash['nl_id'] )) {
 			$mid .= ' AND n.nl_id=? ';
 			$bindVars[] = $pListHash['nl_id'];
 		}
 
-		if( !empty( $pListHash['find'] ) ) {
+		if (!empty( $pListHash['find'] )) {
 			$findesc = '%' . $pListHash['find'] . '%';
 			$mid .= " AND (`name` like ? or `description` like ?)";
 			$bindVars[] = $findesc;
 			$bindVars[] = $findesc;
 		}
 
-		if( !empty( $pListHash['registration_optin'] ) ) {
-			$joinSql = " INNER JOIN `".BIT_DB_PREFIX."liberty_content_prefs` lcp ON (lcp.`content_id`=n.`content_id` AND lcp.`pref_name`='registration_optin' AND lcp.`pref_value`='y') ";
+		if (!empty( $pListHash['registration_optin'] )) {
+			$joinSql = " INNER JOIN `" . BIT_DB_PREFIX . "liberty_content_prefs` lcp ON (lcp.`content_id`=n.`content_id` AND lcp.`pref_name`='registration_optin' AND lcp.`pref_value`='y') ";
 		}
 
 		$query = "SELECT *
-				  FROM `".BIT_DB_PREFIX."newsletters` n INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON( n.`content_id`=lc.`content_id`)
+				  FROM `" . BIT_DB_PREFIX . "newsletters` n INNER JOIN `" . BIT_DB_PREFIX . "liberty_content` lc ON( n.`content_id`=lc.`content_id`)
 					$joinSql
 				  WHERE n.`content_id`=lc.`content_id` $mid
-				  ORDER BY ".$gBitDb->convertSortmode( $pListHash['sort_mode'] );
+				  ORDER BY " . $gBitDb->convertSortmode( $pListHash['sort_mode'] );
 		$result = $gBitDb->query( $query, $bindVars, $pListHash['max_records'], $pListHash['offset'] );
 
-		$query_cant = "select count(*) from `".BIT_DB_PREFIX."newsletters` $mid";
+		$query_cant = "select count(*) from `" . BIT_DB_PREFIX . "newsletters` $mid";
 
 		$ret = [];
-		while( $res = $result->fetchRow() ) {
+		while ( $res = $result->fetchRow() ) {
 			$res['display_url'] = BitNewsletter::getDisplayUrlFromHash( $res );
-			$res["confirmed"] = $gBitDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `unsubscribe_date` IS NULL and `content_id`=?", [ (int) $res['content_id'] ] );
-			$res["unsub_count"] = $gBitDb->getOne( "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `content_id`=?", [ (int) $res['content_id'] ] );
+			$res["confirmed"] = $gBitDb->getOne( "SELECT COUNT(*) FROM `" . BIT_DB_PREFIX . "mail_subscriptions` WHERE `unsubscribe_date` IS NULL and `content_id`=?", [ (int) $res['content_id'] ] );
+			$res["unsub_count"] = $gBitDb->getOne( "SELECT COUNT(*) FROM `" . BIT_DB_PREFIX . "mail_subscriptions` WHERE `content_id`=?", [ (int) $res['content_id'] ] );
 			$ret[$res['content_id']] = $res;
 		}
 
 		return $ret;
 	}
 
-/*	function list_newsletter_subscriptions($nl_id, $offset, $maxRecords, $sort_mode, $find) {
-		$bindVars = [ (int)$nl_id ];
-		if ($find) {
-			$findesc = '%' . $find . '%';
-			$mid = " where `nl_id`=? and (`name` like ? or `description` like ?)";
-			$bindVars[] = $findesc;
-			$bindVars[] = $findesc;
-		} else {
-			$mid = " where `nl_id`=? ";
+	/*	function list_newsletter_subscriptions($nl_id, $offset, $maxRecords, $sort_mode, $find) {
+			$bindVars = [ (int)$nl_id ];
+			if ($find) {
+				$findesc = '%' . $find . '%';
+				$mid = " where `nl_id`=? and (`name` like ? or `description` like ?)";
+				$bindVars[] = $findesc;
+				$bindVars[] = $findesc;
+			} else {
+				$mid = " where `nl_id`=? ";
+			}
+
+			$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` $mid order by ".$this->mDb->convertSortmode("$sort_mode");
+			$query_cant = "select count(*) from mail_subscriptions $mid";
+			$result = $this->mDb->query($query,$bindVars,$maxRecords,$offset);
+			$cant = $this->mDb->getOne($query_cant,$bindVars);
+			$ret = [];
+
+			while ($res = $result->fetchRow()) {
+				$ret[] = $res;
+			}
+			$retval = [];
+			$retval["data"] = $ret;
+			$retval["cant"] = $cant;
+			return $retval;
 		}
 
-		$query = "select * from `".BIT_DB_PREFIX."mail_subscriptions` $mid order by ".$this->mDb->convertSortmode("$sort_mode");
-		$query_cant = "select count(*) from mail_subscriptions $mid";
-		$result = $this->mDb->query($query,$bindVars,$maxRecords,$offset);
-		$cant = $this->mDb->getOne($query_cant,$bindVars);
-		$ret = [];
+	*/
 
-		while ($res = $result->fetchRow()) {
-			$ret[] = $res;
-		}
-		$retval = [];
-		$retval["data"] = $ret;
-		$retval["cant"] = $cant;
-		return $retval;
-	}
-
-*/
-
-	public function expunge(): bool {
-		$ret = FALSE;
-		if( $this->isValid() ) {
+	public function expunge() : bool
+	{
+		$ret = false;
+		if ($this->isValid()) {
 			$this->mDb->StartTrans();
-			$query = "DELETE FROM `".BIT_DB_PREFIX."newsletters` where `nl_id`=?";
+			$query = "DELETE FROM `" . BIT_DB_PREFIX . "newsletters` where `nl_id`=?";
 			$result = $this->mDb->query( $query, [ $this->mNewsletterId ] );
 			// Clear out all individual subscriptions/unsubscriptions, but preserve the unsubscribe_all's
-			$query = "DELETE FROM `".BIT_DB_PREFIX."mail_subscriptions` WHERE `content_id`=? AND `unsubscribe_all` IS NOT NULL";
+			$query = "DELETE FROM `" . BIT_DB_PREFIX . "mail_subscriptions` WHERE `content_id`=? AND `unsubscribe_all` IS NOT NULL";
 			$result = $this->mDb->query( $query, [ $this->mContentId ] );
-			$query = "UPDATE `".BIT_DB_PREFIX."mail_subscriptions` SET `content_id`=NULL WHERE `content_id`=? AND `unsubscribe_all` IS NOT NULL";
+			$query = "UPDATE `" . BIT_DB_PREFIX . "mail_subscriptions` SET `content_id`=NULL WHERE `content_id`=? AND `unsubscribe_all` IS NOT NULL";
 			$result = $this->mDb->query( $query, [ $this->mContentId ] );
-			if( parent::expunge() ) {
-				$ret = TRUE;
+			if (parent::expunge()) {
+				$ret = true;
 				$this->mDb->CompleteTrans();
-			} else {
+			}
+			else {
 				$this->mDb->RollbackTrans();
 			}
 		}
 		return $ret;
 	}
 
-	public function isValid() {
-		return( $this->verifyId( $this->mNewsletterId ) );
+	public function isValid()
+	{
+		return ( $this->verifyId( $this->mNewsletterId ) );
 	}
-
 
 	/**
 	 * Generate a valid url for the Newsletter
@@ -384,16 +383,14 @@ class BitNewsletter extends LibertyContent {
 	 * @param	array	$pParamHash $pNewsletterId of the item to use
 	 * @return	string	Url String
 	 */
-	public static function getDisplayUrlFromHash( &$pParamHash ) {
+	public static function getDisplayUrlFromHash( &$pParamHash )
+	{
 		global $gBitSystem;
-		$ret = NULL;
-		if( BitBase::verifyId( $pParamHash['nl_id'] ) ) {
-			if( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) {
-				$ret = NEWSLETTERS_PKG_URL.$pParamHash['nl_id'];
-			} else {
-				$ret = NEWSLETTERS_PKG_URL.'index.php?nl_id='.$pParamHash['nl_id'];
-			}
-		} else {
+		$ret = null;
+		if (BitBase::verifyId( $pParamHash['nl_id'] )) {
+			$ret = ( $gBitSystem->isFeatureActive( 'pretty_urls' ) ) ? NEWSLETTERS_PKG_URL . $pParamHash['nl_id'] : NEWSLETTERS_PKG_URL . 'index.php?nl_id=' . $pParamHash['nl_id'];
+		}
+		else {
 			$ret = NEWSLETTERS_PKG_URL.'index.php';
 		}
 		return $ret;
