@@ -15,7 +15,7 @@ $gBitNewsletterMailer = new BitNewsletterMailer();
 
 if( !empty( $_REQUEST['batch_command'] ) && !empty( $_REQUEST['queue_id'] ) ) {
 	if( $_REQUEST['batch_command'] == 'delete' ) {
-		foreach( $_REQUEST['queue_id'] as $qId ) { 
+		foreach( $_REQUEST['queue_id'] as $qId ) {
 			$gBitNewsletterMailer->expungeQueueRow( $qId  );
 		}
 	} elseif( $_REQUEST['batch_command'] == 'send' && !empty( $_REQUEST['queue_id'] ) ) {
@@ -26,9 +26,9 @@ if( !empty( $_REQUEST['batch_command'] ) && !empty( $_REQUEST['queue_id'] ) ) {
 }
 
 if( empty( $_REQUEST['batch_command'] ) || $_REQUEST['batch_command'] != 'send' ) {
-	$listHash = array();
+	$listHash = [];
 	$queue = $gBitNewsletterMailer->getQueue( $listHash );
 	$gBitSmarty->assign( 'queue', $queue );
 
-	$gBitSystem->display( 'bitpackage:newsletters/mail_queue.tpl' , NULL, array( 'display_mode' => 'admin' ));
+	$gBitSystem->display( 'bitpackage:newsletters/mail_queue.tpl' , NULL, [ 'display_mode' => 'admin' ]);
 }

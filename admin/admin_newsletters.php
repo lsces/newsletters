@@ -19,10 +19,10 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 	} elseif( empty( $_REQUEST['confirm'] ) ) {
 		$formHash['remove'] = TRUE;
 		$formHash['nl_id'] = $gContent->mNewsletterId;
-		$gBitSystem->confirmDialog( $formHash, 
-			array( 
-				'warning' => tra('Are you sure you want to delete this newsletter?') . ' ' . $gContent->getTitle()
-			)
+		$gBitSystem->confirmDialog( $formHash,
+			[
+				'warning' => tra('Are you sure you want to delete this newsletter?') . ' ' . $gContent->getTitle(),
+			],
 		 );
 	} else {
 		if( $gContent->expunge() ) {
@@ -62,5 +62,5 @@ include_once( CATEGORIES_PKG_INCLUDE_PATH.'categorize_list_inc.php' );
 */
 
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/list_newsletters.tpl', NULL, array( 'display_mode' => 'admin' ));
+$gBitSystem->display( 'bitpackage:newsletters/list_newsletters.tpl', NULL, [ 'display_mode' => 'admin' ]);
 

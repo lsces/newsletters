@@ -16,7 +16,7 @@ $gBitSystem->verifyPermission( 'p_send_newsletters' );
 
 require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_edition_inc.php' );
 
-$feedback = array();
+$feedback = [];
 
 if( @BitBase::verifyId( $_REQUEST["edition_id"] ) ) {
 	$gContent->mEditionId = $_REQUEST["edition_id"];
@@ -49,12 +49,12 @@ if( $gContent->isValid() && isset( $_REQUEST['preview'] ) && isset( $_REQUEST['s
 }
 
 if( $gContent->isValid() ) {
-	$groupListHash = array();
+	$groupListHash = [];
 	$groups = $gBitUser->getAllGroups( $groupListHash );
 	$groups['send_subs']['group_name'] = 'Send to subscribers';
 	$gBitSmarty->assign( 'groupList', $groups );
 } else {
-	$listHash = array();
+	$listHash = [];
 	$editions = $gContent->getList( $listHash );
 	$gBitSmarty->assign( 'editionList', $editions );
 
@@ -66,5 +66,5 @@ if( $gContent->isValid() ) {
 
 $gBitSmarty->assign( 'feedback', $feedback );
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/send_newsletters.tpl' , tra( "Send Newsletter" ).': '.$gContent->getTitle() , array( 'display_mode' => 'admin' ));
+$gBitSystem->display( 'bitpackage:newsletters/send_newsletters.tpl' , tra( "Send Newsletter" ).': '.$gContent->getTitle() , [ 'display_mode' => 'admin' ]);
 

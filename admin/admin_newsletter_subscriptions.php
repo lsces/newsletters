@@ -35,11 +35,11 @@ if( $gContent->isValid() ) {
 			foreach( $_REQUEST["checked"] as $del ) {
 				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
 			}
-			$gBitSystem->confirmDialog( $formHash, 
-				array( 
+			$gBitSystem->confirmDialog( $formHash,
+				[
 					'warning' => tra('Are you sure you want to delete these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
 					'error' => tra('This cannot be undone!'),
-				)
+				],
 			);
 		} else {
 			foreach ($_REQUEST["checked"] as $delete) {
@@ -56,11 +56,11 @@ if( $gContent->isValid() ) {
 			foreach( $_REQUEST["checked"] as $del ) {
 				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
 			}
-			$gBitSystem->confirmDialog( $formHash, 
-				array( 
+			$gBitSystem->confirmDialog( $formHash,
+				[
 					'warning' => tra('Are you sure you want to unsubcsribe these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
 					'error' => tra('This cannot be undone!'),
-				)
+				],
 			);
 		} else {
 			foreach ($_REQUEST["checked"] as $delete) {
@@ -77,11 +77,11 @@ if( $gContent->isValid() ) {
 			foreach( $_REQUEST["checked"] as $del ) {
 				$formHash['input'][] = '<input type="hidden" name="checked[]" value="'.$del.'"/>';
 			}
-			$gBitSystem->confirmDialog( $formHash, 
-				array( 
-					'warning' => tra('Are you sure you want to resubscribe these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',				
+			$gBitSystem->confirmDialog( $formHash,
+				[
+					'warning' => tra('Are you sure you want to resubscribe these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
 					'error' => tra('This cannot be undone!'),
-				)
+				],
 			);
 		} else {
 			foreach ($_REQUEST["checked"] as $delete) {
@@ -108,6 +108,6 @@ include_once( CATEGORIES_PKG_INCLUDE_PATH.'categorize_list_inc.php' );
 */
 
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/admin_newsletter_subscriptions.tpl' , NULL, array( 'display_mode' => 'admin' ));
+$gBitSystem->display( 'bitpackage:newsletters/admin_newsletter_subscriptions.tpl' , NULL, [ 'display_mode' => 'admin' ]);
 
 ?>

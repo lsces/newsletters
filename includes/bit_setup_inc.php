@@ -14,9 +14,9 @@ $pRegisterHash = [
 define( 'NEWSLETTERS_PKG_NAME', $pRegisterHash['package_name'] );
 define( 'NEWSLETTERS_PKG_URL', BIT_ROOT_URL . basename( $pRegisterHash['package_path'] ) . '/' );
 define( 'NEWSLETTERS_PKG_PATH', BIT_ROOT_PATH . basename( $pRegisterHash['package_path'] ) . '/' );
-define( 'NEWSLETTERS_PKG_INCLUDE_PATH', BIT_ROOT_PATH . basename( $pRegisterHash['package_path'] ) . '/includes/'); 
+define( 'NEWSLETTERS_PKG_INCLUDE_PATH', BIT_ROOT_PATH . basename( $pRegisterHash['package_path'] ) . '/includes/');
 define( 'NEWSLETTERS_PKG_CLASS_PATH', BIT_ROOT_PATH . basename( $pRegisterHash['package_path'] ) . '/includes/classes/');
-define( 'NEWSLETTERS_PKG_ADMIN_PATH', BIT_ROOT_PATH . basename( $pRegisterHash['package_path'] ) . '/admin/'); 
+define( 'NEWSLETTERS_PKG_ADMIN_PATH', BIT_ROOT_PATH . basename( $pRegisterHash['package_path'] ) . '/admin/');
 
 $gBitSystem->registerPackage( $pRegisterHash );
 
@@ -46,7 +46,7 @@ if( $gBitSystem->isPackageActive( NEWSLETTERS_PKG_NAME ) ) {
 			$pObject->mDb->CompleteTrans();
 		}
 	}
-	
+
 	function newsletters_user_register( &$pObject ) {
 		if( !empty( $_REQUEST['newsletter_optin'] ) ) {
 			// hidden flag to indicate at least one newsletter was displayed

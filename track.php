@@ -17,7 +17,7 @@ require_once( '../kernel/includes/setup_inc.php' );
 include_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterMailer.php' );
 
 if( isset( $_REQUEST["sub"] ) || $gBitUser->isRegistered() ) {
-	if( isset( $_REQUEST["sub"] ) && strlen( $_REQUEST["sub"] ) == 32 && ($subInfo = BitNewsletterMailer::lookupSubscription( array( 'url_code' => $_REQUEST["sub"] ) )) ) {
+	if( isset( $_REQUEST["sub"] ) && strlen( $_REQUEST["sub"] ) == 32 && ($subInfo = BitNewsletterMailer::lookupSubscription( [ 'url_code' => $_REQUEST["sub"] ] )) ) {
 		BitNewsletterMailer::trackMail( $subInfo['url_code'] );
 	}
 }

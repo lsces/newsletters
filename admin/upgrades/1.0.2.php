@@ -4,23 +4,23 @@
  */
 global $gBitInstaller;
 
-$infoHash = array(
+$infoHash = [
 	'package'      => NEWSLETTERS_PKG_NAME,
 	'version'      => str_replace( '.php', '', basename( __FILE__ )),
 	'description'  => "Replace reserved name reads with hits",
 	'post_upgrade' => NULL,
-);
+];
 
 // Increase the size of the IP column to cope with IPv6
-$gBitInstaller->registerPackageUpgrade( $infoHash, array(
+$gBitInstaller->registerPackageUpgrade( $infoHash, [
 
-array( 'DATADICT' => array(
-	array( 'RENAMECOLUMN' => array(
-		'mail_queue' => array(
-			'`reads`' => '`hits` I2 NOTNULL DEFAULT 0'
-		),
-	)),
-)),
+[ 'DATADICT' => [
+	[ 'RENAMECOLUMN' => [
+		'mail_queue' => [
+			'`reads`' => '`hits` I2 NOTNULL DEFAULT 0',
+		],
+	]],
+]],
 
-));
+]);
 ?>

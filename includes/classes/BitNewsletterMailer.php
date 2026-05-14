@@ -22,6 +22,7 @@
  * required setup
  */
 namespace Bitweaver\Newsletters;
+
 use Bitweaver\BitBase;
 use Bitweaver\Liberty\LibertyContent;
 use Bitweaver\Users\RoleUser;
@@ -32,28 +33,28 @@ require_once( UTIL_PKG_INCLUDE_PATH.'phpmailer/class.phpmailer.php' );
  * @package newsletters
  */
 class BitNewsletterMailer {
-    // Set default variables for all new objects
-    public $From;
-    public $FromName;
-    public $Host;
-    public $Mailer;                         // Alternative to IsSMTP()
-    public $WordWrap;
+	// Set default variables for all new objects
+	public $From;
+	public $FromName;
+	public $Host;
+	public $Mailer;                         // Alternative to IsSMTP()
+	public $WordWrap;
 	public $mDb;
 	public function BitNewsletterMailer () {
 		global $gBitDb, $gBitSystem, $gBitLanguage;
 		$this->mDb = $gBitDb;
 	}
 
-    // Replace the default error_handler
-    public function error_handler( $msg ) {
-    	global $gBitDb;
+	// Replace the default error_handler
+	public function error_handler( $msg ) {
+		global $gBitDb;
 
-    	\Bitweaver\bit_error_handler( NULL, NULL, NULL, "FULFILLMENT ERROR: MISSSING PDF for ORDER" ); // $pOrderId CID ".$prod->mInfo['related_content_id'], $pdfInfo['pdf_file'] , '', $prod->mDb );
-        print "My Site Error";
-        print "Description:";
-        printf("%s", $msg);
-        exit;
-    }
+		\Bitweaver\bit_error_handler( NULL, NULL, NULL, "FULFILLMENT ERROR: MISSSING PDF for ORDER" ); // $pOrderId CID ".$prod->mInfo['related_content_id'], $pdfInfo['pdf_file'] , '', $prod->mDb );
+		print "My Site Error";
+		print "Description:";
+		printf("%s", $msg);
+		exit;
+	}
 
 	public function isRecipientQueued( $pRecipientMixed, $pContentId ) {
 		$lookupCol = BitBase::verifyId( $pRecipientMixed ) ? 'user_id' : 'email';
@@ -95,7 +96,6 @@ class BitNewsletterMailer {
 		return $ret;
 	}
 
-
 	public function tendQueue() {
 		$this->mDb->StartTrans();
 		$query = "SELECT *
@@ -121,7 +121,7 @@ class BitNewsletterMailer {
 			$pick = $this->mDb->GetRow( "SELECT * FROM `".BIT_DB_PREFIX."mail_queue` mq WHERE `mail_queue_id` = ? ".$this->mDb->SQLForUpdate(), [ $pQueueMixed ] );
 		}
 
-		if( !empty( $pick ) ) {	
+		if( !empty( $pick ) ) {
 			$startTime = microtime( TRUE );
 			$this->mDb->query( "UPDATE `".BIT_DB_PREFIX."mail_queue` SET `begin_date`=? WHERE `mail_queue_id` = ? ", [ time(), $pick['mail_queue_id'] ] );
 			if( !empty( $pick['user_id'] ) ) {
@@ -298,9 +298,9 @@ class BitNewsletterMailer {
 
 	public function getQueue( &$pListHash ) {
 		$ret = [];
-		
+
 		LibertyContent::prepGetList( $pListHash );
-		
+
 		$query = "SELECT mq.`mail_queue_id` AS `hash_key`, mq.*, lc.`title`, lc2.`title` AS newsletter_title
 				  FROM `".BIT_DB_PREFIX."mail_queue` mq 
 					INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (lc.content_id=mq.content_id)
@@ -310,7 +310,7 @@ class BitNewsletterMailer {
 		if( $rs = $this->mDb->query( $query ) ) {
 			$ret = $rs->getAssoc();
 		}
-		
+
 		return $ret;
 	}
 
@@ -353,7 +353,6 @@ function bit_add_clickthrough( $pSource, $pUrlCode ) {
 
 }
 
-
 function process_clickthrough_match( $matches ) {
 	global $gUrlCode;
 	$ret = $matches[0];
@@ -362,5 +361,5 @@ function process_clickthrough_match( $matches ) {
 	} else {
 		$ret .= '?ct='.$gUrlCode;
 	}
-	return $ret; 
+	return $ret;
 }

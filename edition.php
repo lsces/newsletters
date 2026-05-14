@@ -19,7 +19,7 @@ $gBitSystem->verifyPackage( 'newsletters' );
 
 require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_edition_inc.php' );
 
-$listHash = array();
+$listHash = [];
 $newsletters = $gContent->mNewsletter->getList( $listHash );
 $gBitSmarty->assign( 'newsletters', $newsletters );
 
@@ -29,10 +29,10 @@ if (isset($_REQUEST["remove"] ) && $gContent->isValid() ) {
 	} elseif( empty( $_REQUEST['confirm'] ) ) {
 		$formHash['remove'] = TRUE;
 		$formHash['edition_id'] = $gContent->mEditionId;
-		$gBitSystem->confirmDialog( $formHash, 
-			array( 
-				'warning' => tra('Are you sure you want to delete this newsletter edition?'). ' ' . $gContent->getTitle()
-			)
+		$gBitSystem->confirmDialog( $formHash,
+			[
+				'warning' => tra('Are you sure you want to delete this newsletter edition?'). ' ' . $gContent->getTitle(),
+			],
 		);
 	} else {
 		if( $gContent->expunge() ) {
@@ -46,7 +46,7 @@ if( $gContent->isValid() ) {
 	$title = $gContent->mInfo['title'];
 	$mid = 'bitpackage:newsletters/view_edition.tpl';
 } else {
-	$listHash = array();
+	$listHash = [];
 	$editions = $gContent->getList( $listHash );
 	$gBitSmarty->assign( 'editionList', $editions );
 	$gBitSmarty->assign( 'listInfo', $listHash );
@@ -55,5 +55,5 @@ if( $gContent->isValid() ) {
 }
 
 // Display the template
-$gBitSystem->display( $mid, $title , array( 'display_mode' => 'edit' ));
+$gBitSystem->display( $mid, $title , [ 'display_mode' => 'edit' ]);
 

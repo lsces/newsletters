@@ -23,6 +23,7 @@
  * required setup
  */
 namespace Bitweaver\Newsletters;
+
 use Bitweaver\BitBase;
 use Bitweaver\KernelTools;
 use Bitweaver\Liberty\LibertyContent;
@@ -99,7 +100,7 @@ class BitNewsletter extends LibertyContent {
 			$this->mDb->StartTrans();
 			if( parent::store( $pParamHash ) ) {
 				if( $this->mNewsletterId ) {
-					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."newsletters", $pParamHash['newsletter_store'], array ( "nl_id" => $this->mNewsletterId ) );
+					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."newsletters", $pParamHash['newsletter_store'],  [ "nl_id" => $this->mNewsletterId ] );
 				} else {
 					$pParamHash['newsletter_store']['content_id'] = $pParamHash['content_id'];
 					$result = $this->mDb->associateInsert( BIT_DB_PREFIX."newsletters", $pParamHash['newsletter_store'] );
@@ -207,7 +208,7 @@ class BitNewsletter extends LibertyContent {
 				$gBitSmarty->assign( 'sub_code', $urlCode );
 				$mail_data = $gBitSmarty->fetch('bitpackage:newsletters/confirm_newsletter_subscription.tpl');
 				@mail($subEmail, KernelTools::tra('Newsletter subscription information at') . ' ' . $gBitSystem->getConfig( "bitmailer_from" ), $mail_data,
-					"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n");
+					"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n", );
 			}
 			$ret = TRUE;
 		}
@@ -246,7 +247,7 @@ class BitNewsletter extends LibertyContent {
 				$gBitSmarty->assign( 'sub_code', $subRow["sub_code"] );
 				$mail_data = $gBitSmarty->fetch( 'bitpackage:newsletters/newsletter_byebye.tpl' );
 				@mail( $subRow["email"], KernelTools::tra( 'Thank you from' ) . ' ' . $gBitSystem->getConfig( "bitmailer_from" ), $mail_data,
-					"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n" );
+					"From: " . $gBitSystem->getConfig( "sender_email" ) . "\r\nContent-type: text/plain;charset=utf-8\r\n", );
 			}
 			$ret = true;
 		}
@@ -396,7 +397,6 @@ class BitNewsletter extends LibertyContent {
 		return $ret;
 	}
 
-
 	public function getEditions( $pNewsletterId = NULL ) {
 		$ret = [];
 		if( empty( $pNewsletterId ) ) {
@@ -410,14 +410,13 @@ class BitNewsletter extends LibertyContent {
 		}
 		return $ret;
 	}
-	
+
 	public function getUserSubscriptions( $pUserId, $pEmail ) {
 		global $gBitDb;
 		$query = "SELECT `content_id` AS hash_key, ms.* FROM `".BIT_DB_PREFIX."mail_subscriptions` ms WHERE `user_id`=? OR `email`=?";
 		$ret = $gBitDb->getAssoc( $query, [ $pUserId, $pEmail ] );
 		return $ret;
 	}
-
 
 }
 

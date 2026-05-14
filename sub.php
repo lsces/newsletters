@@ -25,10 +25,10 @@ if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'p_newsletters_subs
 
 require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_inc.php' );
 
-$feedback = array();
+$feedback = [];
 
 /* List newsletters */
-$listHash = array();
+$listHash = [];
 $newsletters = $gContent->getList( $listHash );
 $gBitSmarty->assign( 'subs', BitNewsletter::getUserSubscriptions( $gBitUser->getField( 'user_id' ), $gBitUser->getField( 'email' ) ) );
 $gBitSmarty->assign('newsletters', $newsletters );
@@ -36,13 +36,13 @@ $gBitSmarty->assign('newsletters', $newsletters );
 $foo = parse_url($_SERVER["REQUEST_URI"]);
 $gBitSmarty->assign('url_subscribe', httpPrefix(). $foo["path"]);
 
-$subinfo = array();
-$unsubs = array();
+$subinfo = [];
+$unsubs = [];
 
 // We have a url_code from a clicked link in an email
-if( isset( $_REQUEST['c'] ) && strlen( $_REQUEST['c'] ) == 32 && ($subInfo = BitNewsletterMailer::lookupSubscription( array( 'url_code' => $_REQUEST['c'] ) )) ) {
+if( isset( $_REQUEST['c'] ) && strlen( $_REQUEST['c'] ) == 32 && ($subInfo = BitNewsletterMailer::lookupSubscription( [ 'url_code' => $_REQUEST['c'] ] )) ) {
 } elseif( $gBitUser->isRegistered() ) {
-	if( !$subInfo = BitNewsletterMailer::lookupSubscription( array( 'user_id' => $gBitUser->mUserId ) ) ) {
+	if( !$subInfo = BitNewsletterMailer::lookupSubscription( [ 'user_id' => $gBitUser->mUserId ] ) ) {
 		$subInfo = $gBitUser->mInfo;
 	}
 }
@@ -57,7 +57,7 @@ $unsubs = BitNewsletterMailer::getUnsubscriptions( $lookup );
 // Update subscriptions
 if( isset( $_REQUEST["update"] ) ) {
 	$subHash['response_content_id'] = $_REQUEST['response_content_id'];
-	$subHash['sub_lookup'] = !empty( $subInfo['user_id'] ) ? array( 'user_id' => $subInfo['user_id'] ) : array( 'email' => $subInfo['email'] );
+	$subHash['sub_lookup'] = !empty( $subInfo['user_id'] ) ? [ 'user_id' => $subInfo['user_id'] ] : [ 'email' => $subInfo['email'] ];
 
 	if( !empty( $_REQUEST['unsubscribe_all'] ) ) {
 		$subHash['unsubscribe_all'] = 'y';
@@ -106,5 +106,5 @@ $title = "Newsletter Subscriptions";
 $gBitSmarty->assign( 'feedback', $feedback );
 
 // Display the template
-$gBitSystem->display( $mid, $title , array( 'display_mode' => 'display' ));
+$gBitSystem->display( $mid, $title , [ 'display_mode' => 'display' ]);
 

@@ -22,6 +22,7 @@
  * required setup
  */
 namespace Bitweaver\Newsletters;
+
 use Bitweaver\BitBase;
 use Bitweaver\KernelTools;
 use Bitweaver\Liberty\LibertyMime;
@@ -75,7 +76,7 @@ class BitNewsletterEdition extends LibertyMime {
 			$this->mDb->StartTrans();
 			if( parent::store( $pParamHash ) ) {
 				if( $this->mEditionId ) {
-					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."newsletters_editions", $pParamHash['edition_store'], array ( "edition_id" => $this->mEditionId ) );
+					$result = $this->mDb->associateUpdate( BIT_DB_PREFIX."newsletters_editions", $pParamHash['edition_store'],  [ "edition_id" => $this->mEditionId ] );
 				} else {
 					$pParamHash['edition_store']['content_id'] = $pParamHash['content_id'];
 					$result = $this->mDb->associateInsert( BIT_DB_PREFIX."newsletters_editions", $pParamHash['edition_store'] );
@@ -140,7 +141,6 @@ class BitNewsletterEdition extends LibertyMime {
 		return $ret;
 	}
 
-
 	public static function getList( &$pListHash ) {
 		global $gBitDb;
 
@@ -173,7 +173,7 @@ class BitNewsletterEdition extends LibertyMime {
 			// remove formating tags
 			$data = preg_replace( '/{[^{}]*}/', '', $ret[$k]['data'] );
 		}
-        $pListHash['total_records'] = $gBitDb->getOne( $query_cant, $bindVars );
+		$pListHash['total_records'] = $gBitDb->getOne( $query_cant, $bindVars );
 		$pListHash['block_pages'] = 5;
 		$pListHash['total_pages'] = ceil( $pListHash['total_records'] / $pListHash['max_records'] );
 		$pListHash['current_page'] = (!empty( $pListHash['offset'] ) ? floor( $pListHash['offset'] / $pListHash['max_records'] ) + 1 : 1 );

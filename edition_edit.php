@@ -20,7 +20,7 @@ $gBitSystem->verifyPermission( 'p_newsletters_create_editions' );
 
 require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_edition_inc.php' );
 
-$listHash = array();
+$listHash = [];
 $newsletters = $gContent->mNewsletter->getList( $listHash );
 
 if( empty( $newsletters ) ) {
@@ -42,7 +42,7 @@ if( !empty( $gContent->mInfo ) ) {
 
 if( isset( $_REQUEST["edit"] ) ) {
 	$formInfo['data'] = $_REQUEST["edit"];
-	$formInfo['format_guid'] = ( !empty( $_REQUEST['format_guid'] ) ? $_REQUEST['format_guid'] : ( isset( $gContent->mInfo['format_guid'] ) ? $gContent->mInfo['format_guid'] : 'tikiwiki' ) );
+	$formInfo['format_guid'] = ( !empty( $_REQUEST['format_guid'] ) ? $_REQUEST['format_guid'] : ( $gContent->mInfo['format_guid'] ?? 'tikiwiki' ) );
 }
 if( isset( $_REQUEST['title'] ) ) {
 	$formInfo['title'] = $_REQUEST['title'];
@@ -74,10 +74,10 @@ if (isset($_REQUEST["preview"])) {
 //		}
 		header( 'Location: '.$gContent->getDisplayUrl() );
 		die;
-	} else {
+	}
 		$formInfo = $_REQUEST;
 		$formInfo['data'] = &$_REQUEST['edit'];
-	}
+
 } else {
 	$gContent->invokeServices( 'content_edit_function' );
 }
@@ -94,4 +94,4 @@ $gBitSmarty->assign( 'pageInfo', $formInfo );
 $gBitSmarty->assign( 'errors', $gContent->mErrors );
 
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) , array( 'display_mode' => 'edit' ));
+$gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) , [ 'display_mode' => 'edit' ]);

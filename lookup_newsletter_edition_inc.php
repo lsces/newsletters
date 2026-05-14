@@ -24,4 +24,3 @@ if( empty( $gContent ) || !is_object( $gContent ) || !$gContent->isValid() ) {
 	$gBitSmarty->assign( 'gContent', $gContent );
 }
 
-

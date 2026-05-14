@@ -1,6 +1,6 @@
 <?php
 
-$tables = array(
+$tables = [
 
 'newsletters' => "
   nl_id I4 AUTO PRIMARY,
@@ -81,9 +81,9 @@ $tables = array(
 	clicks I4
 	CONSTRAINT ', CONSTRAINT `mail_clickthrough_user_ref` FOREIGN KEY (`user_id`) REFERENCES `".BIT_DB_PREFIX."users_users` (`user_id`),
 				  CONSTRAINT `mail_clickthrough_content_ref` FOREIGN KEY (`content_id`) REFERENCES `".BIT_DB_PREFIX."liberty_content` (`content_id`)'
-"
+",
 
-);
+];
 
 global $gBitInstaller;
 
@@ -91,36 +91,36 @@ foreach( array_keys( $tables ) AS $tableName ) {
 	$gBitInstaller->registerSchemaTable( NEWSLETTERS_PKG_DIR, $tableName, $tables[$tableName] );
 }
 
-$gBitInstaller->registerPackageInfo( NEWSLETTERS_PKG_NAME, array(
+$gBitInstaller->registerPackageInfo( NEWSLETTERS_PKG_NAME, [
 	'description' => "Newsletters is for emailing users updates about your site.",
 	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
-) );
+] );
 
 // ### Indexes
-$indices = array (
-	'mail_sub_nl_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'content_id', 'opts' => NULL ),
-	'mail_sub_user_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'user_id', 'opts' => NULL ),
-	'mail_sub_email_idx' => array( 'table' => 'mail_subscriptions', 'cols' => 'email', 'opts' => NULL ),
-	'nl_ed_nl_idx' => array( 'table' => 'newsletters_editions', 'cols' => 'nl_content_id', 'opts' => NULL ),
-	'nl_ed_content_idx' => array( 'table' => 'newsletters_editions', 'cols' => 'content_id', 'opts' => NULL ),
-	'mailq_email_idx' => array( 'table' => 'mail_queue', 'cols' => 'email', 'opts' => NULL ),
-	'mailq_user_idx' => array( 'table' => 'mail_queue', 'cols' => 'user_id', 'opts' => NULL ),
-	'mailq_content_idx' => array( 'table' => 'mail_queue', 'cols' => 'content_id', 'opts' => NULL ),
-	'mailq_user_content_idx' => array( 'table' => 'mail_queue', 'cols' => array('content_id','user_id'), 'opts' => array( 'UNIQUE' ) ),
-	'mailq_sent_idx' => array( 'table' => 'mail_queue', 'cols' => 'sent_date', 'opts' => NULL ),
-);
+$indices =  [
+	'mail_sub_nl_idx' => [ 'table' => 'mail_subscriptions', 'cols' => 'content_id', 'opts' => NULL ],
+	'mail_sub_user_idx' => [ 'table' => 'mail_subscriptions', 'cols' => 'user_id', 'opts' => NULL ],
+	'mail_sub_email_idx' => [ 'table' => 'mail_subscriptions', 'cols' => 'email', 'opts' => NULL ],
+	'nl_ed_nl_idx' => [ 'table' => 'newsletters_editions', 'cols' => 'nl_content_id', 'opts' => NULL ],
+	'nl_ed_content_idx' => [ 'table' => 'newsletters_editions', 'cols' => 'content_id', 'opts' => NULL ],
+	'mailq_email_idx' => [ 'table' => 'mail_queue', 'cols' => 'email', 'opts' => NULL ],
+	'mailq_user_idx' => [ 'table' => 'mail_queue', 'cols' => 'user_id', 'opts' => NULL ],
+	'mailq_content_idx' => [ 'table' => 'mail_queue', 'cols' => 'content_id', 'opts' => NULL ],
+	'mailq_user_content_idx' => [ 'table' => 'mail_queue', 'cols' => ['content_id','user_id'], 'opts' => [ 'UNIQUE' ] ],
+	'mailq_sent_idx' => [ 'table' => 'mail_queue', 'cols' => 'sent_date', 'opts' => NULL ],
+];
 $gBitInstaller->registerSchemaIndexes( NEWSLETTERS_PKG_NAME, $indices );
 
 // ### Default UserPermissions
-$gBitInstaller->registerUserPermissions( NEWSLETTERS_PKG_NAME, array(
-	array('p_newsletters_admin', 'Can admin and send newsletters', 'editors', 'newsletters'),
-	array('p_newsletters_create', 'Can create newsletters', 'editors', 'newsletters'),
-	array('p_newsletters_create_editions', 'Can create editions', 'editors', 'newsletters'),
-	array('p_newsletters_subscribe', 'Can subscribe to newsletters', 'registered', 'newsletters'),
-	array('p_newsletters_subscribe_email', 'Can subscribe any email to newsletters', 'editors', 'newsletters'),
-) );
+$gBitInstaller->registerUserPermissions( NEWSLETTERS_PKG_NAME, [
+	['p_newsletters_admin', 'Can admin and send newsletters', 'editors', 'newsletters'],
+	['p_newsletters_create', 'Can create newsletters', 'editors', 'newsletters'],
+	['p_newsletters_create_editions', 'Can create editions', 'editors', 'newsletters'],
+	['p_newsletters_subscribe', 'Can subscribe to newsletters', 'registered', 'newsletters'],
+	['p_newsletters_subscribe_email', 'Can subscribe any email to newsletters', 'editors', 'newsletters'],
+] );
 
 // Requirements
-$gBitInstaller->registerRequirements( NEWSLETTERS_PKG_NAME, array(
-    'liberty' => array( 'min' => '2.1.4' ),
-));
+$gBitInstaller->registerRequirements( NEWSLETTERS_PKG_NAME, [
+	'liberty' => [ 'min' => '2.1.4' ],
+]);
