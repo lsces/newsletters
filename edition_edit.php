@@ -14,6 +14,7 @@
 /** 
  * Initialization
  */
+use Bitweaver\KernelTools;
 require_once( '../kernel/includes/setup_inc.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
 $gBitSystem->verifyPermission( 'p_newsletters_create_editions' );
@@ -94,4 +95,4 @@ $gBitSmarty->assign( 'pageInfo', $formInfo );
 $gBitSmarty->assign( 'errors', $gContent->mErrors );
 
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? tra( 'Edit Edition' ).': '.$gContent->getTitle() : tra( 'Create New Edition' )) , [ 'display_mode' => 'edit' ]);
+$gBitSystem->display( 'bitpackage:newsletters/edit_edition.tpl', ($gContent->isValid() ? KernelTools::tra( 'Edit Edition' ).': '.$gContent->getTitle() : KernelTools::tra( 'Create New Edition' )) , [ 'display_mode' => 'edit' ]);

@@ -14,13 +14,14 @@
 /** 
  * Initialization
  */
+use Bitweaver\KernelTools;
 require_once( '../kernel/includes/setup_inc.php' );
 include_once( NEWSLETTERS_PKG_CLASS_PATH.'BitNewsletterMailer.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
 
 if( !$gBitUser->isRegistered() && !$gBitUser->hasPermission( 'p_newsletters_subscribe' ) && empty( $_REQUEST['c'] ) ) {
-	$gBitSystem->fatalError( tra("You must be logged in to subscribe to newsletters"));
+	$gBitSystem->fatalError( KernelTools::tra("You must be logged in to subscribe to newsletters"));
 }
 
 require_once( NEWSLETTERS_PKG_INCLUDE_PATH.'lookup_newsletter_inc.php' );
@@ -72,16 +73,16 @@ if( isset( $_REQUEST["update"] ) ) {
 	}
 
 	if( BitNewsletterMailer::storeSubscriptions( $subHash ) ) {
-		$feedback['success'] = tra( "Your subscriptions were updated." );
+		$feedback['success'] = KernelTools::tra( "Your subscriptions were updated." );
 	} else {
-		$feedback['error'] = tra( "Subscriptions were not updated." );
+		$feedback['error'] = KernelTools::tra( "Subscriptions were not updated." );
 	}
 	$unsubs = BitNewsletterMailer::getUnsubscriptions( $lookup );
 }
 
 if( isset( $_REQUEST["subscribe"] ) && !empty( $_REQUEST["email"] ) ) {
 	$gBitSystem->verifyPermission( 'p_newsletters_subscribe' );
-	$feedback['success'] = tra( "Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed." );
+	$feedback['success'] = KernelTools::tra( "Thanks for your subscription. You will receive an email soon to confirm your subscription. No newsletters will be sent to you until the subscription is confirmed." );
 
 	if( !$gBitUser->hasPermission( 'p_subscribe_email' ) ) {
 		$_REQUEST["email"] = $gBitUser->mInfo['email'];

@@ -15,6 +15,7 @@
 /** 
  * Initialization
  */
+use Bitweaver\KernelTools;
  require_once( '../kernel/includes/setup_inc.php' );
 $gBitSystem->verifyPackage( 'newsletters' );
 $gBitSystem->verifyPermission( 'p_newsletters_create' );
@@ -29,7 +30,7 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 		$formHash['nl_id'] = $gContent->mNewsletterId;
 		$gBitSystem->confirmDialog( $formHash,
 			[
-				'warning' => tra('Are you sure you want to delete this newsletter?') . ' ' . $gContent->getTitle(),
+				'warning' => KernelTools::tra('Are you sure you want to delete this newsletter?') . ' ' . $gContent->getTitle(),
 			],
 		 );
 	} else {
@@ -44,7 +45,7 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 	header( "Location: ".$_SERVER['SCRIPT_NAME'] );
 	die;
 } elseif( !empty( $_REQUEST['cancel'] ) ) {
-	bit_redirect( NEWSLETTERS_PKG_URL );
+	KernelTools::bit_redirect( NEWSLETTERS_PKG_URL );
 }
 
 $gContent->invokeServices( 'content_edit_function' );

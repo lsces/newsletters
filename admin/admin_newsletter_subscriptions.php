@@ -1,4 +1,5 @@
 <?php
+use Bitweaver\KernelTools;
 
 // $Header$
 
@@ -37,8 +38,8 @@ if( $gContent->isValid() ) {
 			}
 			$gBitSystem->confirmDialog( $formHash,
 				[
-					'warning' => tra('Are you sure you want to delete these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
-					'error' => tra('This cannot be undone!'),
+					'warning' => KernelTools::tra('Are you sure you want to delete these subscriptions?') . ' (' . KernelTools::tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
+					'error' => KernelTools::tra('This cannot be undone!'),
 				],
 			);
 		} else {
@@ -58,8 +59,8 @@ if( $gContent->isValid() ) {
 			}
 			$gBitSystem->confirmDialog( $formHash,
 				[
-					'warning' => tra('Are you sure you want to unsubcsribe these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
-					'error' => tra('This cannot be undone!'),
+					'warning' => KernelTools::tra('Are you sure you want to unsubcsribe these subscriptions?') . ' (' . KernelTools::tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
+					'error' => KernelTools::tra('This cannot be undone!'),
 				],
 			);
 		} else {
@@ -79,8 +80,8 @@ if( $gContent->isValid() ) {
 			}
 			$gBitSystem->confirmDialog( $formHash,
 				[
-					'warning' => tra('Are you sure you want to resubscribe these subscriptions?') . ' (' . tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
-					'error' => tra('This cannot be undone!'),
+					'warning' => KernelTools::tra('Are you sure you want to resubscribe these subscriptions?') . ' (' . KernelTools::tra('Count: ') . count( $_REQUEST["checked"] ) . ')',
+					'error' => KernelTools::tra('This cannot be undone!'),
 				],
 			);
 		} else {

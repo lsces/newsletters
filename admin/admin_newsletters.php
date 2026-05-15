@@ -1,4 +1,5 @@
 <?php
+use Bitweaver\KernelTools;
 
 // $Header$
 
@@ -21,7 +22,7 @@ if( isset( $_REQUEST["remove"] ) && $gContent->isValid() ) {
 		$formHash['nl_id'] = $gContent->mNewsletterId;
 		$gBitSystem->confirmDialog( $formHash,
 			[
-				'warning' => tra('Are you sure you want to delete this newsletter?') . ' ' . $gContent->getTitle(),
+				'warning' => KernelTools::tra('Are you sure you want to delete this newsletter?') . ' ' . $gContent->getTitle(),
 			],
 		 );
 	} else {

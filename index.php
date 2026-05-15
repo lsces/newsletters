@@ -1,4 +1,5 @@
 <?php
+use Bitweaver\KernelTools;
 // $Header$
 
 // Copyright (c) 2006 - bitweaver.org - Christian Fowler, Max Kremmel, et. al
@@ -15,4 +16,4 @@ $gBitSmarty->assign( 'gDefaultCenter', $gDefaultCenter );
 $gBitSmarty->assign( 'feedback', $feedback );
 
 // Display the template
-$gBitSystem->display( 'bitpackage:kernel/dynamic.tpl', tra( 'Newsletters' ) , [ 'display_mode' => 'display' ]);
+$gBitSystem->display( 'bitpackage:kernel/dynamic.tpl', KernelTools::tra( 'Newsletters' ) , [ 'display_mode' => 'display' ]);

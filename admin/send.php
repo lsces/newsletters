@@ -1,4 +1,5 @@
 <?php
+use Bitweaver\KernelTools;
 
 // $Header$
 
@@ -41,10 +42,10 @@ if( $gContent->isValid() && isset( $_REQUEST['preview'] ) && isset( $_REQUEST['s
 		global $gBitNewsletterMailer;
 		$gBitNewsletterMailer = new BitNewsletterMailer();
 		$queueCount = $gBitNewsletterMailer->queueRecipients( $gContent->mContentId, $gContent->mNewsletter->mContentId, $emails, !empty( $_REQUEST['test_mode'] ) );
-		$feedback['success'] = $queueCount.' '.tra( 'emails were queued to be sent:' ).' '.$gContent->getTitle();
+		$feedback['success'] = $queueCount.' '.KernelTools::tra( 'emails were queued to be sent:' ).' '.$gContent->getTitle();
 		$gContent->mEditionId = NULL;
 	} else {
-		$feedback['error'] = tra( 'No emails were queued.' );
+		$feedback['error'] = KernelTools::tra( 'No emails were queued.' );
 	}
 }
 
@@ -66,5 +67,5 @@ if( $gContent->isValid() ) {
 
 $gBitSmarty->assign( 'feedback', $feedback );
 // Display the template
-$gBitSystem->display( 'bitpackage:newsletters/send_newsletters.tpl' , tra( "Send Newsletter" ).': '.$gContent->getTitle() , [ 'display_mode' => 'admin' ]);
+$gBitSystem->display( 'bitpackage:newsletters/send_newsletters.tpl' , KernelTools::tra( "Send Newsletter" ).': '.$gContent->getTitle() , [ 'display_mode' => 'admin' ]);
 

@@ -13,6 +13,7 @@
 /** 
  * Initialization
  */
+use Bitweaver\KernelTools;
 require_once( '../kernel/includes/setup_inc.php' );
 
 $gBitSystem->verifyPackage( 'newsletters' );
@@ -31,7 +32,7 @@ if (isset($_REQUEST["remove"] ) && $gContent->isValid() ) {
 		$formHash['edition_id'] = $gContent->mEditionId;
 		$gBitSystem->confirmDialog( $formHash,
 			[
-				'warning' => tra('Are you sure you want to delete this newsletter edition?'). ' ' . $gContent->getTitle(),
+				'warning' => KernelTools::tra('Are you sure you want to delete this newsletter edition?'). ' ' . $gContent->getTitle(),
 			],
 		);
 	} else {
@@ -50,7 +51,7 @@ if( $gContent->isValid() ) {
 	$editions = $gContent->getList( $listHash );
 	$gBitSmarty->assign( 'editionList', $editions );
 	$gBitSmarty->assign( 'listInfo', $listHash );
-	$title = tra("List Editions");
+	$title = KernelTools::tra("List Editions");
 	$mid = 'bitpackage:newsletters/list_editions.tpl';
 }
 
