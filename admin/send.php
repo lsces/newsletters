@@ -50,10 +50,7 @@ if( $gContent->isValid() && isset( $_REQUEST['preview'] ) && isset( $_REQUEST['s
 }
 
 if( $gContent->isValid() ) {
-	$groupListHash = [];
-	$groups = $gBitUser->getAllGroups( $groupListHash );
-	$groups['send_subs']['group_name'] = 'Send to subscribers';
-	$gBitSmarty->assign( 'groupList', $groups );
+	$gBitSmarty->assign( 'groupList', [ 'send_subs' => [ 'group_name' => 'Send to subscribers' ] ] );
 } else {
 	$listHash = [];
 	$editions = $gContent->getList( $listHash );
