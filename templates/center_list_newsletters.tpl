@@ -71,7 +71,7 @@
 					<li class="item {cycle values='odd,even'}">
 						<div class="floaticon">
 						{if $subs.$nlId.unsubscribe_all || $subs.$nlId.unsubscribe_date}
-							<strong>{biticon ipackage="icons" iname="dialog-cancel" iexplain="Success" iforce="icon"}{tr}Unsubscribed{/tr}: {$subs.$nlId.unsubscribe_date|bit_short_date}</strong><br/>
+							<strong>{biticon ipackage="icons" iname="process-stop" iexplain="Success" iforce="icon"}{tr}Unsubscribed{/tr}: {$subs.$nlId.unsubscribe_date|bit_short_date}</strong><br/>
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}sub.php?nl_id={$nl.nl_id}&amp;sub=1">{tr}Subscribe{/tr}</a>
 						{elseif $subs.$nlId}
 							<strong>{biticon ipackage="icons" iname="dialog-ok"  ipackage="icons"  iexplain="Success" iforce="icon"}{tr}Subscribed{/tr}: {$subs.$nlId.subscribed_date|bit_short_date}</strong><br/>
