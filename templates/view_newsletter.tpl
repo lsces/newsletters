@@ -3,14 +3,14 @@
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon'}
 
 		{if $gContent->isOwner() || $gBitUser->hasPermission( 'p_newsletters_admin' )}
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}">{booticon iname="icon-edit" ipackage="icons" iexplain="edit"}</a>
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}&amp;remove=1">{booticon iname="icon-trash" ipackage="icons" iexplain="delete"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}">{biticon ipackage="icons" iname="document-properties" ipackage="icons" iexplain="edit"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}&amp;remove=1">{biticon ipackage="icons" iname="edit-delete" ipackage="icons" iexplain="delete"}</a>
 		{/if}
 
 		{if $gBitUser->hasPermission( 'p_liberty_print' )}
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}print_blog_post.php?post_id={$post_id}">{booticon iname="icon-print"  ipackage="icons"  iexplain="print"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}print_blog_post.php?post_id={$post_id}">{biticon ipackage="icons" iname="document-print"  ipackage="icons"  iexplain="print"}</a>
 		{/if}
-		<a href="{$smarty.const.NEWSLETTERS_PKG_URL}send_newsletter.php?post_id={$post_id}">{booticon iname="icon-envelope"  ipackage="icons"  iexplain="email this post"}</a>
+		<a href="{$smarty.const.NEWSLETTERS_PKG_URL}send_newsletter.php?post_id={$post_id}">{biticon ipackage="icons" iname="internet-mail"  ipackage="icons"  iexplain="email this post"}</a>
 	</div>
 
 	<div class="header">
