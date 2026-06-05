@@ -8,7 +8,7 @@
 		{/if}
 		{if $gContent->isOwner() || $gBitUser->hasPermission( 'p_newsletters_admin' )}
 			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?edition_id={$gContent->mEditionId}">{biticon ipackage="icons" iname="document-properties" ipackage="icons" iexplain="edit"}</a>
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php?edition_id={$gContent->mEditionId}&amp;remove=1">{biticon ipackage="icons" iname="edit-delete" ipackage="icons" iexplain="delete"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php?edition_id={$gContent->mEditionId}&amp;remove=1">{biticon ipackage="icons" iname="user-trash" ipackage="icons" iexplain="delete"}</a>
 		{/if}
 	</div>
 	{/if}

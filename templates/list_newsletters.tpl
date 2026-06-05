@@ -33,7 +33,7 @@
 						<td><a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/admin_newsletter_subscriptions.php?nl_id={$nl.nl_id}"> {$nl.unsub_count|default:0}</a></td>
 						<td style="text-align:right;">
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="text-x-generic" ipackage="icons" iexplain="New Edition"}</a>
-							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?remove=1&amp;nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="edit-delete" ipackage="icons" iexplain=Remove}</a>
+							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?remove=1&amp;nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="user-trash" ipackage="icons" iexplain=Remove}</a>
 							<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?&amp;nl_id={$nl.nl_id}">{biticon ipackage="icons" iname="document-properties" ipackage="icons" iexplain=Edit}</a>
 						</td>
 					</tr>

@@ -4,7 +4,7 @@
 
 		{if $gContent->isOwner() || $gBitUser->hasPermission( 'p_newsletters_admin' )}
 			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}">{biticon ipackage="icons" iname="document-properties" ipackage="icons" iexplain="edit"}</a>
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}&amp;remove=1">{biticon ipackage="icons" iname="edit-delete" ipackage="icons" iexplain="delete"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}newsletters.php?nl_id={$gContent->mNewsletterId}&amp;remove=1">{biticon ipackage="icons" iname="user-trash" ipackage="icons" iexplain="delete"}</a>
 		{/if}
 
 		{if $gBitUser->hasPermission( 'p_liberty_print' )}
