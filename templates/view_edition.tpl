@@ -4,11 +4,11 @@
 		{include file="bitpackage:liberty/services_inc.tpl" serviceLocation='icon'}
 
 		{if $gBitUser->hasPermission('p_newsletters_admin')}
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?edition_id={$gContent->mEditionId}">{biticon ipackage="icons" iname="internet-mail"  ipackage="icons"  iexplain="email this post"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}admin/send.php?edition_id={$gContent->mEditionId}">{biticon ipackage="icons" iname="internet-mail"  iexplain="email this post"}</a>
 		{/if}
 		{if $gContent->isOwner() || $gBitUser->hasPermission( 'p_newsletters_admin' )}
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?edition_id={$gContent->mEditionId}">{biticon ipackage="icons" iname="edit" ipackage="icons" iexplain="edit"}</a>
-			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php?edition_id={$gContent->mEditionId}&amp;remove=1">{biticon ipackage="icons" iname="user-trash" ipackage="icons" iexplain="delete"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition_edit.php?edition_id={$gContent->mEditionId}">{biticon ipackage="icons" iname="edit" iexplain="edit"}</a>
+			<a href="{$smarty.const.NEWSLETTERS_PKG_URL}edition.php?edition_id={$gContent->mEditionId}&amp;remove=1">{biticon ipackage="icons" iname="user-trash" iexplain="delete"}</a>
 		{/if}
 	</div>
 	{/if}
